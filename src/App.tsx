@@ -11,15 +11,22 @@ import './App.css';
 import cv, { Mat} from "opencv-ts";
 
 const PALETTE_BASE_COLOR = 10;
-type pixel = [number, number, number];
+type pixel = [number, number, number, number];
 
 function generateColorPalette(image: HTMLImageElement, paletteSize: number  = PALETTE_BASE_COLOR) : pixel[] {
   let colorThief = new ColorThief();
-  return colorThief.getPalette(image, paletteSize);
+  const paletteRGB : Array<[number, number, number]> = colorThief.getPalette(image, paletteSize);
+  return paletteRGB.map(([r,g,b]) => [r,g,b, 255]);
 }
 
-function distance([x1, y1, z1]: pixel, [x2, y2, z2]: pixel): number {
-  return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2);
+function distance([x1, y1, z1, a1]: pixel, [x2, y2, z2, a2]: pixel): number {
+  const deltaR = (x1 - x2);
+  const deltaG = (y1 - y2);
+  const deltaB = (z1 - z2);
+  const deltaA = (a1 - a2);
+
+  const rgbDistanceSquared = (deltaR * deltaR + deltaG * deltaG + deltaB * deltaB) / 3.0;
+  return deltaA * deltaA / 2.0 + rgbDistanceSquared * a1 * a2 / (255 * 255);
 }
 
 function getColor(image: Mat, x: number, y: number) : pixel {
@@ -30,13 +37,13 @@ function getColor(image: Mat, x: number, y: number) : pixel {
     const G = data[y * cols * channels + x * channels + 1];
     const B = data[y * cols * channels + x * channels + 2];
     const A = data[y * cols * channels + x * channels + 3];
-    //return [R, G, B, A];
-    return [R, G, B];
+    return [R, G, B, A];
+    //return [R, G, B];
 }
 
 function findNearestColor(pixel: pixel, palette: pixel[]) : pixel {
-  let nearestColor: pixel = palette[0];
-  let nearestDistance = 255 * 255 * 255;
+  let nearestColor: pixel = [0,0,0,0];
+  let nearestDistance = distance([0, 0, 0, 0], [255, 255, 255, 255]);
   palette.forEach(color => {
     const currentDistance = distance(color, pixel)
     if(nearestDistance > currentDistance) {
@@ -56,11 +63,11 @@ function imageQuantified(image: HTMLImageElement, paletteSize: number) : Mat {
 
   for(let x = 0; x < cols; x++) {
     for(let y = 0; y < rows; y++) {
-      const [R, G, B] = findNearestColor(getColor(src, x,y), palette);
+      const [R, G, B, A] = findNearestColor(getColor(src, x,y), palette);
       target.data[y * cols * channels + x * channels] = R;
       target.data[y * cols * channels + x * channels + 1] = G;
       target.data[y * cols * channels + x * channels + 2] = B;
-      target.data[y * cols * channels + x * channels + 3] = 255;
+      target.data[y * cols * channels + x * channels + 3] = A;
     }
   }
   return target;
@@ -80,9 +87,9 @@ function App() {
           return;
         }
         const src = cv.imread(ref.current);
-        let image = imageQuantified(ref.current, 3);
+        let image = imageQuantified(ref.current, 10);
+        //let image = cv.imread(ref.current)
         cv.imshow('canvasOutput', image);
-
         const meshes = utilGenerateFlagsByPixelsColorOccurance("canvasOutput");
         console.log(meshes);
         setMeshes(meshes);
