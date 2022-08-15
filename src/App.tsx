@@ -5,13 +5,26 @@ import useOpenCV from "./customHooks/useOpenCV";
 import ThreeCanvas from "./components/ThreeCanvas";
 import * as THREE from 'three';
 import {
-  generateGeometriesByColorOccurance as utilGenerateFlagsByPixelsColorOccurance
+  generateGeometriesByNumberOfColors
 } from "colors2geometries";
 import './App.css';
 import cv, { Mat} from "opencv-ts";
 
 const PALETTE_BASE_COLOR = 10;
 type pixel = [number, number, number, number];
+/*
+export function generateGeometriesByNumberOfColors(imageDomId: string, numberOfColors: number = 20) : THREE.Mesh[] {
+    const src = cv.imread(imageDomId);
+    const image = document.getElementById(imageDomId);
+    if(!image) {
+        throw new Error(`Cannot find the element with the id '${imageDomId}'`)
+    }
+    console.log("fdfkdjfkdj")
+    const palette = generateColorPalette(image as HTMLImageElement,numberOfColors);
+    const quantifiedImage = imageQuantified(src, palette);
+    return fromMatToGeometries(quantifiedImage, palette);
+}
+
 
 function generateColorPalette(image: HTMLImageElement, paletteSize: number  = PALETTE_BASE_COLOR) : pixel[] {
   let colorThief = new ColorThief();
@@ -54,16 +67,14 @@ function findNearestColor(pixel: pixel, palette: pixel[]) : pixel {
   return nearestColor;
 }
 
-function imageQuantified(image: HTMLImageElement, paletteSize: number) : Mat {
-  const palette = generateColorPalette(image, paletteSize);
-  const src = cv.imread(image);
-  const target = new cv.Mat.zeros(src.rows, src.cols, cv. CV_8UC4);
+function imageQuantified(image: Mat, palette: pixel[]) : Mat {
+  const target = new cv.Mat.zeros(image.rows, image.cols, cv. CV_8UC4);
   const channels = target.channels();
   const { cols, rows } = target;
 
   for(let x = 0; x < cols; x++) {
     for(let y = 0; y < rows; y++) {
-      const [R, G, B, A] = findNearestColor(getColor(src, x,y), palette);
+      const [R, G, B, A] = findNearestColor(getColor(image, x,y), palette);
       target.data[y * cols * channels + x * channels] = R;
       target.data[y * cols * channels + x * channels + 1] = G;
       target.data[y * cols * channels + x * channels + 2] = B;
@@ -71,7 +82,7 @@ function imageQuantified(image: HTMLImageElement, paletteSize: number) : Mat {
     }
   }
   return target;
-}
+}*/
 
 
 function App() {
@@ -86,11 +97,7 @@ function App() {
         if(!ref.current) {
           return;
         }
-        const src = cv.imread(ref.current);
-        let image = imageQuantified(ref.current, 10);
-        //let image = cv.imread(ref.current)
-        cv.imshow('canvasOutput', image);
-        const meshes = utilGenerateFlagsByPixelsColorOccurance("canvasOutput");
+        const meshes = generateGeometriesByNumberOfColors(ref.current.id, 10);
         console.log(meshes);
         setMeshes(meshes);
 
