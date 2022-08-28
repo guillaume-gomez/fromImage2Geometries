@@ -6,16 +6,16 @@ import { useWindowSize, useFullscreen   } from "rooks";
 import { create3dPointLighting, createPlane, createHelpers, createLights } from "./threejsUtils";
 
 interface ThreeCanvasProps {
-  meshes: THREE.Mesh[];
+  groups: THREE.Group[];
   width: number;
   height: number;
-  velocity?: number;
+  velocity: number;
 }
 
 const MAX_Z = 0.3;
 const MIN_Z = 0;
 
-function ThreeCanvas( { meshes, width, height, velocity = 0.001} : ThreeCanvasProps) {
+function ThreeCanvas( { groups, width, height, velocity = 0.001} : ThreeCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scene = useRef(new THREE.Scene());
   const groupRef = useRef<THREE.Group|null>(null);
@@ -76,7 +76,7 @@ function ThreeCanvas( { meshes, width, height, velocity = 0.001} : ThreeCanvasPr
   }, [canvasRef]);
 
   useEffect(() => {
-    if(meshes) {
+    if(groups) {
       // clear scenes
       while(scene.current.children.length > 0) {
         scene.current.remove(scene.current.children[0]);
@@ -87,10 +87,10 @@ function ThreeCanvas( { meshes, width, height, velocity = 0.001} : ThreeCanvasPr
       //scene.current.add(create3dPointLighting());
       scene.current.add(createLights());
       //scene.current.add(...createHelpers());
-      scene.current.add(generateFlagsByPixelsColorOccurance(meshes));
+      scene.current.add(generateFlagsByPixelsColorOccurance(groups));
 
     }
-  }, [meshes]);
+  }, [groups]);
 
   useEffect(() => {
     stop();
@@ -115,10 +115,10 @@ function ThreeCanvas( { meshes, width, height, velocity = 0.001} : ThreeCanvasPr
   }
 
   // find all the colors in the image and run findcountours based on this colors
-  function generateFlagsByPixelsColorOccurance(meshes: THREE.Mesh[]) : THREE.Group {
+  function generateFlagsByPixelsColorOccurance(groups: THREE.Group[]) : THREE.Group {
     let group = new THREE.Group();
     group.name = "MY_FLAG_GROUP";
-    group.add(...meshes);
+    group.add(...groups);
 
     const bbox = new THREE.Box3().setFromObject(group);
     group.position.set(-(bbox.min.x + bbox.max.x) / 2, -(bbox.min.y + bbox.max.y), -(bbox.min.z + bbox.max.z) / 2);
