@@ -9,6 +9,7 @@ function App() {
   const ref = useRef<HTMLImageElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [velocity, setVelocity] = useState<number>(0.001);
+  const [numberOfColors, setNumberOfColors] = useState<number>(10);
   const [groups, setGroups] = useState<THREE.Group[]>([]);
 
   function loadImage(event: React.ChangeEvent<HTMLInputElement>) {
@@ -19,7 +20,7 @@ function App() {
         if(!ref.current) {
           return;
         }
-        const groups = generateGeometriesByNumberOfColors(ref.current.id, 3);
+        const groups = generateGeometriesByNumberOfColors(ref.current.id, numberOfColors);
         setGroups(groups);
         setLoading(false);
       };
@@ -62,6 +63,18 @@ function App() {
                   onChange={(e) => setVelocity(parseInt(e.target.value,10)/1000)}
                 />
                 <label>Velocity : {velocity * 1000}</label>
+
+          </li>
+          <li>
+                <input
+                  type="range"
+                  className="range range-primary"
+                  min={1}
+                  max={20}
+                  value={numberOfColors}
+                  onChange={(e) => setNumberOfColors(parseInt(e.target.value,10))}
+                />
+                <label>Number Of Colors : {numberOfColors}</label>
 
           </li>
           <li><a>Sidebar Item 1</a></li>
