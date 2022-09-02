@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useWindowSize } from "rooks";
 import ThreeCanvas from "./components/ThreeCanvas";
 import SettingsForm from "./components/SettingsForm";
 import * as THREE from 'three';
@@ -40,9 +41,23 @@ function saveAsImage() {
 */
 
 function App() {
+  const { innerWidth, innerHeight } = useWindowSize();
+  const refContainer = useRef<HTMLDivElement>(null);
+  const [widthContainer, setWidthContainer] = useState<number>(500);
+  const [heightContainer, setHeightContainer] = useState<number>(500);
+
   const [velocity, setVelocity] = useState<number>(0)//(0.001);
   const [numberOfColors, setNumberOfColors] = useState<number>(10);
   const [groups, setGroups] = useState<THREE.Group[]>([]);
+
+  useEffect(() => {
+    if(refContainer.current && innerHeight && innerWidth) {
+      const rect = refContainer.current.getBoundingClientRect();
+      setWidthContainer(rect.width);
+      // make sure the height is not too important
+      setHeightContainer(innerHeight);
+    }
+  }, [innerWidth, innerHeight, refContainer]);
 
   function updateGroupPosition(groupId: number, z: number) {
     const newGroups = groups.map(group => {
@@ -62,7 +77,7 @@ function App() {
 
 
   return (
-    <div className="App">
+    <div ref={refContainer}>
         <SettingsForm
           velocity={velocity}
           setVelocity={setVelocity}
@@ -72,8 +87,7 @@ function App() {
           updateGroupPosition={updateGroupPosition}
           onLoadImage={onLoadImage}
         />
-        <canvas id="canvasOutput" />
-        <ThreeCanvas groups={groups} width={500} height={500} velocity={velocity} />
+        <ThreeCanvas groups={groups} width={widthContainer} height={heightContainer} velocity={velocity} />
     </div>
   );
 }

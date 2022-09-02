@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import useAnimationFrame from "../customHooks/useAnimationFrame";
-import { useWindowSize, useFullscreen   } from "rooks";
+import { useFullscreen } from "rooks";
 import { create3dPointLighting, createPlane, createHelpers, createLights } from "./threejsUtils";
 
 interface ThreeCanvasProps {
@@ -24,9 +24,8 @@ function ThreeCanvas( { groups, width, height, velocity = 0.001} : ThreeCanvasPr
   const renderer = useRef<THREE.WebGLRenderer| null>(null);
   const { play, stop } = useAnimationFrame(animate);
   const {
-    toggle,
-    element,
-  } = useFullscreen();
+    toggleFullscreen,
+  } = useFullscreen({ target: canvasRef });
 
 
   useEffect(() => {
@@ -132,7 +131,7 @@ function ThreeCanvas( { groups, width, height, velocity = 0.001} : ThreeCanvasPr
   }
 
   return (
-    <canvas ref={canvasRef} className="webgl" onDoubleClick={e => toggle(e.target as any)}></canvas>
+    <canvas ref={canvasRef} className="webgl" onDoubleClick={e => toggleFullscreen()}></canvas>
   );
 }
 
