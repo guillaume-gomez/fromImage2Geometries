@@ -59,7 +59,8 @@ function ThreeCanvas( { groups, width, height, velocity = 0.001} : ThreeCanvasPr
 
       // Renderer
       renderer.current = new THREE.WebGLRenderer({
-          canvas: canvasRef.current
+          canvas: canvasRef.current,
+          preserveDrawingBuffer: true
       });
 
       renderer.current.setSize(sizes.width, sizes.height);

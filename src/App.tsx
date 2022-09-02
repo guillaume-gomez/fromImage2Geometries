@@ -1,14 +1,48 @@
 import React, { useState, useRef } from 'react';
 import ThreeCanvas from "./components/ThreeCanvas";
+import CustomRange from "./components/CustomRange";
 import * as THREE from 'three';
 import {
-  generateGeometriesByNumberOfColors
+  generateGeometriesByNumberOfColors,
+  groupsByColor
 } from "colors2geometries";
+
+/*
+function saveAsImage() {
+        var imgData, imgNode;
+
+        try {
+            var strMime = "image/jpeg";
+            imgData = renderer.domElement.toDataURL(strMime);
+
+            saveFile(imgData.replace(strMime, strDownloadMime), "test.jpg");
+
+        } catch (e) {
+            console.log(e);
+            return;
+        }
+
+    }
+
+    var saveFile = function (strData, filename) {
+        var link = document.createElement('a');
+        if (typeof link.download === 'string') {
+            document.body.appendChild(link); //Firefox requires the link to be in the body
+            link.download = filename;
+            link.href = strData;
+            link.click();
+            document.body.removeChild(link); //remove the link when done
+        } else {
+            location.replace(uri);
+        }
+    }
+
+*/
 
 function App() {
   const ref = useRef<HTMLImageElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [velocity, setVelocity] = useState<number>(0.001);
+  const [velocity, setVelocity] = useState<number>(0)//(0.001);
   const [numberOfColors, setNumberOfColors] = useState<number>(10);
   const [groups, setGroups] = useState<THREE.Group[]>([]);
 
@@ -20,12 +54,25 @@ function App() {
         if(!ref.current) {
           return;
         }
-        const groups = generateGeometriesByNumberOfColors(ref.current.id, numberOfColors);
+        const meshes = generateGeometriesByNumberOfColors(ref.current.id, numberOfColors);
+        const groups = groupsByColor(meshes, false);
         setGroups(groups);
         setLoading(false);
       };
     }
   }
+
+  function updateGroupPosition(groupId: number, z: number) {
+    const newGroups = groups.map(group => {
+      if(group.id === groupId) {
+        group.position.z = z;
+      }
+      return group;
+    });
+    setGroups(newGroups);
+  }
+
+
   return (
     <div className="drawer">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
@@ -77,8 +124,22 @@ function App() {
                 <label>Number Of Colors : {numberOfColors}</label>
 
           </li>
-          <li><a>Sidebar Item 1</a></li>
-          <li><a>Sidebar Item 2</a></li>
+          {
+            groups.map(group => {
+              return (
+                <li key={group.id}>
+                  <CustomRange
+                    label={group.id.toString()}
+                    min={-2}
+                    max={2}
+                    step={0.01}
+                    value={group.position.z}
+                    onChange={(value) => updateGroupPosition(group.id, value )}
+                  />
+                </li>
+              )
+            })
+          }
         </ul>
       </div>
     </div>
