@@ -41,6 +41,12 @@ function SettingsForm({
     }
   }
 
+  function alignGroup() {
+    groups.forEach((group, index) => {
+      updateGroupPosition(group.id, index / 1000);
+    });
+  }
+
   return (
     <div className="lg:absolute md:static lg:top-8 lg:left-8 lg:max-w-xs md:max-w-full md:w-full">
       <div className="overflow-auto card bg-base-100 shadow-2xl w-full" style={{maxHeight: "50vh"}}>
@@ -70,28 +76,33 @@ function SettingsForm({
                   />
                   <label>Number Of Colors : {numberOfColors}</label>
                 </div>
-              {
-                showGroupsZ ?
-                  groups.map(group => {
-                    return (
-                        <CustomRange
-                          label={""}
-                          min={-2}
-                          max={2}
-                          step={0.01}
-                          value={group.position.z}
-                          onChange={(value) => updateGroupPosition(group.id, value )}
-                        />
-                    )
-                  })
-                :
-                <button className="btn btn-square" onClick={() => setShowGroupZ(false)}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                  Hide
+              <div className="flex flex-col gap-5">
+                <button className="btn btn-primary" onClick={alignGroup}>
+                  align all groups
                 </button>
+              {
+                  showGroupsZ ?
+                    groups.map(group => {
+                      return (
+                          <CustomRange
+                            label={""}
+                            min={-2}
+                            max={2}
+                            step={0.01}
+                            value={group.position.z}
+                            onChange={(value) => updateGroupPosition(group.id, value )}
+                          />
+                      )
+                    })
+                  :
+                  <button className="btn btn-square" onClick={() => setShowGroupZ(false)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Hide
+                  </button>
               }
+              </div>
             </>
           }
         </div>
