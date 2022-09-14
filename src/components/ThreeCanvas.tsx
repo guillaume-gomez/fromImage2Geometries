@@ -12,8 +12,10 @@ interface ThreeCanvasProps {
   velocity: number;
 }
 
-const MAX_Z = 0.3;
-const MIN_Z = 0;
+const MAX_Z = 1.25;
+const MIN_Z = -1.25;
+
+const DEPTH = 0.5;
 
 
 function ThreeCanvas( { groups, width, height, velocity = 0.001} : ThreeCanvasProps) {
@@ -103,10 +105,10 @@ function ThreeCanvas( { groups, width, height, velocity = 0.001} : ThreeCanvasPr
       renderer.current.render(scene.current, camera.current);
       if(groupRef.current) {
         groupRef.current.children.forEach((flagItem, index) => {
-          if(flagItem.position.z > MAX_Z) {
+          if((flagItem.position.z + DEPTH) >= MAX_Z) {
             groupRefDirections.current[index] = -1;
           }
-          if(flagItem.position.z < MIN_Z) {
+          else if((flagItem.position.z - DEPTH) <= MIN_Z) {
             groupRefDirections.current[index] = 1;
           }
           flagItem.position.z += groupRefDirections.current[index] * velocity;
