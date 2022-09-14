@@ -46,8 +46,8 @@ function App() {
   const [widthContainer, setWidthContainer] = useState<number>(500);
   const [heightContainer, setHeightContainer] = useState<number>(500);
 
-  const [velocity, setVelocity] = useState<number>(0)//(0.001);
-  const [numberOfColors, setNumberOfColors] = useState<number>(10);
+  const [velocity, setVelocity] = useState<number>(0);
+  const [numberOfColors, setNumberOfColors] = useState<number>(18);
   const [groups, setGroups] = useState<THREE.Group[]>([]);
 
   useEffect(() => {

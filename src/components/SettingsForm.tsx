@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import CustomRange from "./CustomRange";
 import * as THREE from 'three';
 
@@ -10,6 +10,16 @@ interface SettingsFormProps {
   groups: THREE.Group[];
   updateGroupPosition: (groupId: number, value: number) => void;
   onLoadImage: (imageDomId: string) => void;
+}
+
+function toObjectUrl(url :string) {
+  return fetch(url)
+      .then((response)=> {
+        return response.blob();
+      })
+      .then(blob=> {
+        return URL.createObjectURL(blob);
+      });
 }
 
 
@@ -26,6 +36,24 @@ function SettingsForm({
   const [loading, setLoading] = useState<boolean>(false);
   const [hasEditable, setHasEditable] = useState<boolean>(false);
   const [showGroupsZ, setShowGroupZ] = useState<boolean>(true);
+
+
+  useEffect(() => {
+    async function test () {
+      const data = await toObjectUrl("https://www.lequipe.fr/_medias/img-photo-jpg/a-reau-l-equipe/1500000001682641/0:0,1998:1332-828-552-75/170c4");
+      console.log(data);
+      if(ref.current) {
+        ref.current.src = data;
+        ref.current.onload =  (event: any) => {
+          if(!ref.current) {
+            return;
+          }
+          onLoadImage(ref.current.id);
+        };
+      }
+    }
+    test();
+  }, [ref]);
 
   function loadImage(event: React.ChangeEvent<HTMLInputElement>) {
     if(event && event.target && event.target.files && ref.current) {

@@ -15,6 +15,7 @@ interface ThreeCanvasProps {
 const MAX_Z = 0.3;
 const MIN_Z = 0;
 
+
 function ThreeCanvas( { groups, width, height, velocity = 0.001} : ThreeCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scene = useRef(new THREE.Scene());
