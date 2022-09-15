@@ -16,6 +16,7 @@ function App() {
   const refContainer = useRef<HTMLDivElement>(null);
   const [widthContainer, setWidthContainer] = useState<number>(500);
   const [heightContainer, setHeightContainer] = useState<number>(500);
+  const [error, setError] = useState<string|null>(null);
 
   const [velocity, setVelocity] = useState<number>(0);
   const [numberOfColors, setNumberOfColors] = useState<number>(18);
@@ -51,9 +52,16 @@ function App() {
   }
 
   function onLoadImage(imageDomId: string) {
-    const meshes = generateGeometriesByNumberOfColors(imageDomId, numberOfColors);
-    const groups = groupsByColor(meshes, false);
-    setGroups(groups);
+    try {
+      const meshes = generateGeometriesByNumberOfColors(imageDomId, numberOfColors);
+      console.log(meshes)
+      const groups = groupsByColor(meshes, false);
+      setGroups(groups);
+      setError(null);
+    } catch(error) {
+      console.log(error);
+      setError("The image could not be converted with theses parameters. Reload the page and try again");
+    }
   }
 
 
@@ -68,6 +76,7 @@ function App() {
           updateGroupPosition={updateGroupPosition}
           onLoadImage={onLoadImage}
           saveImage={saveImage}
+          error={error}
         />
         <ThreeCanvas
           ref={canvasActionsRef}

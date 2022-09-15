@@ -11,6 +11,7 @@ interface SettingsFormProps {
   updateGroupPosition: (groupId: number, value: number) => void;
   onLoadImage: (imageDomId: string) => void;
   saveImage: (ref: RefObject<HTMLAnchorElement>) => void;
+  error: string |null;
 }
 
 function toObjectUrl(url :string) {
@@ -32,7 +33,8 @@ function SettingsForm({
   groups,
   updateGroupPosition,
   onLoadImage,
-  saveImage
+  saveImage,
+  error
 } : SettingsFormProps) {
   const ref = useRef<HTMLImageElement>(null);
   const refAnchor = useRef<HTMLAnchorElement>(null);
@@ -83,6 +85,7 @@ function SettingsForm({
       <div className="overflow-auto card bg-base-100 shadow-2xl w-full" style={{maxHeight: "50vh"}}>
         <div className="card-body p-3 flex flex-col gap-5">
           <input type='file' accept="image/*" /*className="hidden"*/ onChange={loadImage} />
+          {error && <p className="text-error text-xs">{error}</p>}
           <img className="hidden" id="imageSrc" alt="No Image" ref={ref} />
           { loading ?
               <button className="btn loading">loading</button>
