@@ -14,6 +14,7 @@
     "colors2geometries": "../colors2geometries",
     "colorthief": "^2.3.2",
     "daisyui": "^2.24.0",
+    "date-fns": "^2.29.3",
     "opencv-ts": "^1.3.6",
     "postcss": "^8.4.16",
     "react": "^18.2.0",

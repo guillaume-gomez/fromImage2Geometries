@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, RefObject } from 'react';
 import CustomRange from "./CustomRange";
 import * as THREE from 'three';
 
@@ -10,6 +10,7 @@ interface SettingsFormProps {
   groups: THREE.Group[];
   updateGroupPosition: (groupId: number, value: number) => void;
   onLoadImage: (imageDomId: string) => void;
+  saveImage: (ref: RefObject<HTMLAnchorElement>) => void;
 }
 
 function toObjectUrl(url :string) {
@@ -31,8 +32,10 @@ function SettingsForm({
   groups,
   updateGroupPosition,
   onLoadImage,
+  saveImage
 } : SettingsFormProps) {
   const ref = useRef<HTMLImageElement>(null);
+  const refAnchor = useRef<HTMLAnchorElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [hasEditable, setHasEditable] = useState<boolean>(false);
   const [showGroupsZ, setShowGroupZ] = useState<boolean>(true);
@@ -133,6 +136,7 @@ function SettingsForm({
               </div>
             </>
           }
+          <a ref={refAnchor} className="btn btn-primary" onClick={() => saveImage(refAnchor)}>Save</a>
         </div>
       </div>
     </div>
