@@ -19,7 +19,7 @@ function App() {
   const [error, setError] = useState<string|null>(null);
 
   const [velocity, setVelocity] = useState<number>(0);
-  const [numberOfColors, setNumberOfColors] = useState<number>(18);
+  const [numberOfColors, setNumberOfColors] = useState<number>(10);
   const [groups, setGroups] = useState<THREE.Group[]>([]);
 
   useEffect(() => {
