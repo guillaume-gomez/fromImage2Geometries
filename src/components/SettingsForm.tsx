@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, RefObject } from 'react';
 import CustomRange from "./CustomRange";
+import CollapsibleCard from "./CollapsibleCard";
 import * as THREE from 'three';
 
 interface SettingsFormProps {
@@ -41,7 +42,7 @@ function SettingsForm({
   const [loading, setLoading] = useState<boolean>(false);
   const [imageData, setImageData] = useState<string|null>(null);
   const [uploadOption, setUploadOption] = useState<boolean>(true);
-  const [showOptions, setShowOptions] = useState<boolean>(true);
+  const [selectedTab, setSelectedTab] = useState<string>("upload");
 
   async function loadImageFromUrl(event: React.ChangeEvent<HTMLInputElement>) {
     const data = await toObjectUrl(event.target.value);
@@ -74,94 +75,112 @@ function SettingsForm({
     });
   }
 
+  function renderSettings() {
+    return (
+      <CollapsibleCard
+        title="Settings"
+        intialState={false}
+      >
+        <div className="flex flex-col bg-neutral-focus gap-2 items-center rounded p-2">
+          <div className="tabs">
+            <a
+              className={`tab tab-bordered ${selectedTab === "upload" ? 'tab-active' : ''}`}
+              onClick={() => setSelectedTab("upload")}
+            >
+              Upload
+            </a>
+            <a
+              className={`tab tab-bordered ${selectedTab === "link" ? 'tab-active' : ''}`}
+              onClick={() => setSelectedTab("link")}
+            >
+              Paste a link
+            </a>
+          </div>
+          {
+            selectedTab === "upload" ?
+              <input type='file'
+                className="h-12 lg:w-full"
+                accept="image/*"
+                onChange={loadImage}
+              />
+              :
+              <input
+                type="text"
+                className="input input-bordered w-full max-w-xs"
+                placeholder="https://www.lequipe.fr/_medias/img-photo-jpg/a-reau-l-equipe/1500000001682641/0:0,1998:1332-828-552-75/170c4"
+                onBlur={loadImageFromUrl}
+              />
+          }
+          <div>
+            <input
+              type="range"
+              className="range range-primary"
+              min={1}
+              max={20}
+              value={numberOfColors}
+              onChange={(e) => setNumberOfColors(parseInt(e.target.value,10))}
+            />
+            <label>Number Of Colors : {numberOfColors}</label>
+          </div>
+          <img className="hidden" id="imageSrc" alt="No Image" ref={ref} />
+          <button className="btn btn-primary" onClick={generate} disabled={imageData === null}>Generate 🧪</button>
+          {error && <p className="text-error text-xs">{error}</p>}
+        </div>
+      </CollapsibleCard>
+    );
+  }
+
+  function renderOptions() {
+    return (
+      <CollapsibleCard
+            title="Options"
+        intialState={true}
+      >
+        { loading ?
+          <button className="btn loading">loading</button>
+          :
+           <>
+            <CustomRange
+              label={"Velocity"}
+              min={0}
+              max={0.025}
+              step={0.001}
+              value={velocity}
+              onChange={(value) => setVelocity(value)}
+            />
+            <div className="flex flex-col gap-5">
+              <button className="btn btn-outline btn-primary" onClick={alignGroup}>
+                align all groups
+              </button>
+              {
+                groups.map(group => {
+                  return (
+                      <CustomRange
+                        label={""}
+                        min={-2}
+                        max={2}
+                        step={0.01}
+                        value={group.position.z}
+                        onChange={(value) => updateGroupPosition(group.id, value )}
+                      />
+                  )
+                })
+              }
+            </div>
+          </>
+        }
+        </CollapsibleCard>
+    );
+  }
+
   return (
     <div className="lg:absolute md:static lg:top-8 lg:left-8 lg:max-w-xs md:max-w-full md:w-full">
       <div className="overflow-auto card bg-base-100 shadow-2xl w-full" style={{maxHeight: "50vh"}}>
 
         <div className="card-body p-3 flex flex-col gap-5">
-          <div className="flex flex-col bg-neutral-focus gap-2 items-center rounded p-2">
-            <div className="flex items-center gap-2 self-end">
-              <span>{uploadOption ? "Upload an image" : "Paste an image url"}</span>
-              <input type="checkbox" className="toggle" checked={uploadOption} onClick={() => setUploadOption(!uploadOption)} />
-            </div>
-            {
-              uploadOption ?
-                <input type='file'
-                  className="w-full h-12"
-                  accept="image/*"
-                  onChange={loadImage}
-                />
-                :
-                <input
-                  type="text"
-                  className="input input-bordered w-full max-w-xs"
-                  placeholder="https://www.lequipe.fr/_medias/img-photo-jpg/a-reau-l-equipe/1500000001682641/0:0,1998:1332-828-552-75/170c4"
-                  onBlur={loadImageFromUrl}
-                />
-
-            }
-            <div>
-              <input
-                type="range"
-                className="range range-primary"
-                min={1}
-                max={20}
-                value={numberOfColors}
-                onChange={(e) => setNumberOfColors(parseInt(e.target.value,10))}
-              />
-              <label>Number Of Colors : {numberOfColors}</label>
-            </div>
-            <img className="hidden" id="imageSrc" alt="No Image" ref={ref} />
-            <button className="btn btn-primary" onClick={generate} disabled={imageData === null}>Generate 🧪</button>
-            {error && <p className="text-error text-xs">{error}</p>}
-          </div>
-
+          {renderSettings()}
           <span className="text-xs">Double click to switch to fullscreen</span>
-
-          <div
-            tabIndex={0}
-            className={"collapse collapse-arrow border bg-neutral-focus border-0 rounded"}
-          >
-            <input type="checkbox" checked={showOptions} onChange={() => setShowOptions(!showOptions)}/>
-            <div className="collapse-title text-lg font-medium">
-              Options
-            </div>
-            <div className="collapse-content">
-              { loading ?
-                <button className="btn loading">loading</button>
-                :
-                 <>
-                  <CustomRange
-                    label={"Velocity"}
-                    min={0}
-                    max={0.025}
-                    step={0.001}
-                    value={velocity}
-                    onChange={(value) => setVelocity(value)}
-                  />
-                  <div className="flex flex-col gap-5">
-                    <button className="btn btn-outline btn-primary" onClick={alignGroup}>
-                      align all groups
-                    </button>
-                    {
-                      groups.map(group => {
-                        return (
-                            <CustomRange
-                              label={""}
-                              min={-2}
-                              max={2}
-                              step={0.01}
-                              value={group.position.z}
-                              onChange={(value) => updateGroupPosition(group.id, value )}
-                            />
-                        )
-                      })
-                    }
-                  </div>
-                </>
-              }
-            </div>
-          </div>
+          {renderOptions()}
           <a ref={refAnchor} className="btn btn-secondary" onClick={() => saveImage(refAnchor)}>Take Screenshot 📷</a>
         </div>
       </div>
