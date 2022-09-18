@@ -76,7 +76,7 @@ function App() {
           updateGroupPosition={updateGroupPosition}
           onLoadImage={onLoadImage}
           saveImage={saveImage}
-          error={error}
+          errorGeneration={error}
         />
         <ThreeCanvas
           ref={canvasActionsRef}

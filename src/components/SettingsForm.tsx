@@ -12,7 +12,7 @@ interface SettingsFormProps {
   updateGroupPosition: (groupId: number, value: number) => void;
   onLoadImage: (imageDomId: string) => void;
   saveImage: (ref: RefObject<HTMLAnchorElement>) => void;
-  error: string |null;
+  errorGeneration: string |null;
 }
 
 function toObjectUrl(url: string) {
@@ -35,7 +35,7 @@ function SettingsForm({
   updateGroupPosition,
   onLoadImage,
   saveImage,
-  error
+  errorGeneration
 } : SettingsFormProps) {
   const ref = useRef<HTMLImageElement>(null);
   const refAnchor = useRef<HTMLAnchorElement>(null);
@@ -43,10 +43,16 @@ function SettingsForm({
   const [imageData, setImageData] = useState<string|null>(null);
   const [uploadOption, setUploadOption] = useState<boolean>(true);
   const [selectedTab, setSelectedTab] = useState<string>("upload");
+  const [errorLink, setErroLink] = useState<string|null>(null);
 
   async function loadImageFromUrl(event: React.ChangeEvent<HTMLInputElement>) {
-    const data = await toObjectUrl(event.target.value);
-    setImageData(data);
+    try {
+      const data = await toObjectUrl(event.target.value);
+      setImageData(data);
+      setErroLink(null);
+    } catch {
+      setErroLink("Cannot load the image from the link");
+    }
   }
 
   function loadImage(event: React.ChangeEvent<HTMLInputElement>) {
@@ -104,12 +110,15 @@ function SettingsForm({
                 onChange={loadImage}
               />
               :
+              <>
               <input
                 type="text"
                 className="input input-bordered w-full max-w-xs"
                 placeholder="https://www.lequipe.fr/_medias/img-photo-jpg/a-reau-l-equipe/1500000001682641/0:0,1998:1332-828-552-75/170c4"
                 onBlur={loadImageFromUrl}
               />
+              {errorLink && <p className="text-error text-xs">{errorLink}</p>}
+              </>
           }
           <div>
             <input
@@ -123,8 +132,13 @@ function SettingsForm({
             <label>Number Of Colors : {numberOfColors}</label>
           </div>
           <img className="hidden" id="imageSrc" alt="No Image" ref={ref} />
-          <button className="btn btn-primary" onClick={generate} disabled={imageData === null}>Generate 🧪</button>
-          {error && <p className="text-error text-xs">{error}</p>}
+          {
+            loading ?
+              <button className="btn loading">loading</button>
+              :
+              <button className="btn btn-primary" onClick={generate} disabled={imageData === null}>Generate 🧪</button>
+          }
+          {errorGeneration && <p className="text-error text-xs">{errorGeneration}</p>}
         </div>
       </CollapsibleCard>
     );
@@ -136,39 +150,33 @@ function SettingsForm({
             title="Options"
         intialState={true}
       >
-        { loading ?
-          <button className="btn loading">loading</button>
-          :
-           <>
-            <CustomRange
-              label={"Velocity"}
-              min={0}
-              max={0.025}
-              step={0.001}
-              value={velocity}
-              onChange={(value) => setVelocity(value)}
-            />
-            <div className="flex flex-col gap-5">
-              <button className="btn btn-outline btn-primary" onClick={alignGroup}>
-                align all groups
-              </button>
-              {
-                groups.map(group => {
-                  return (
-                      <CustomRange
-                        label={""}
-                        min={-2}
-                        max={2}
-                        step={0.01}
-                        value={group.position.z}
-                        onChange={(value) => updateGroupPosition(group.id, value )}
-                      />
-                  )
-                })
-              }
-            </div>
-          </>
-        }
+          <CustomRange
+            label={"Velocity"}
+            min={0}
+            max={0.025}
+            step={0.001}
+            value={velocity}
+            onChange={(value) => setVelocity(value)}
+          />
+          <div className="flex flex-col gap-5">
+            <button className="btn btn-outline btn-primary" onClick={alignGroup}>
+              align all groups
+            </button>
+            {
+              groups.map(group => {
+                return (
+                    <CustomRange
+                      label={""}
+                      min={-2}
+                      max={2}
+                      step={0.01}
+                      value={group.position.z}
+                      onChange={(value) => updateGroupPosition(group.id, value )}
+                    />
+                )
+              })
+            }
+          </div>
         </CollapsibleCard>
     );
   }
