@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, RefObject } from 'react';
 import CustomRange from "./CustomRange";
 import CollapsibleCard from "./CollapsibleCard";
+import UploadButton from "./UploadButton";
 import * as THREE from 'three';
 
 interface SettingsFormProps {
@@ -104,11 +105,7 @@ function SettingsForm({
           </div>
           {
             selectedTab === "upload" ?
-              <input type='file'
-                className="h-12 lg:w-full"
-                accept="image/*"
-                onChange={loadImage}
-              />
+              <UploadButton  onChange={loadImage}/>
               :
               <>
               <input
