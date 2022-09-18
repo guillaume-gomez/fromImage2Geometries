@@ -182,7 +182,7 @@ function SettingsForm({
     <div className="lg:absolute md:static lg:top-8 lg:left-8 lg:max-w-xs md:max-w-full md:w-full">
       <div className="overflow-auto card bg-base-100 shadow-2xl w-full" style={{maxHeight: "50vh"}}>
 
-        <div className="card-body p-3 flex flex-col gap-5">
+        <div className="card-body p-3 flex flex-col gap-3">
           {renderSettings()}
           <span className="text-xs">Double click to switch to fullscreen</span>
           {renderOptions()}
