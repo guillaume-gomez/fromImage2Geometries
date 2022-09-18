@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, RefObject } from 'react';
+import React, { useState, useRef, RefObject } from 'react';
 import CustomRange from "./CustomRange";
 import CollapsibleCard from "./CollapsibleCard";
 import UploadButton from "./UploadButton";
@@ -42,7 +42,6 @@ function SettingsForm({
   const refAnchor = useRef<HTMLAnchorElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [imageData, setImageData] = useState<string|null>(null);
-  const [uploadOption, setUploadOption] = useState<boolean>(true);
   const [selectedTab, setSelectedTab] = useState<string>("upload");
   const [errorLink, setErroLink] = useState<string|null>(null);
 
@@ -88,35 +87,37 @@ function SettingsForm({
         title="Settings"
         intialState={false}
       >
-        <div className="flex flex-col bg-neutral-focus gap-2 items-center rounded p-2">
-          <div className="tabs">
-            <a
-              className={`tab tab-bordered ${selectedTab === "upload" ? 'tab-active' : ''}`}
-              onClick={() => setSelectedTab("upload")}
-            >
-              Upload
-            </a>
-            <a
-              className={`tab tab-bordered ${selectedTab === "link" ? 'tab-active' : ''}`}
-              onClick={() => setSelectedTab("link")}
-            >
-              Paste a link
-            </a>
+        <div className="flex flex-col bg-neutral-focus gap-4 items-center rounded">
+          <div className="flex flex-col items-center gap-2">
+            <div className="tabs">
+              <span
+                className={`tab tab-bordered ${selectedTab === "upload" ? 'tab-active' : ''}`}
+                onClick={() => setSelectedTab("upload")}
+              >
+                Upload
+              </span>
+              <span
+                className={`tab tab-bordered ${selectedTab === "link" ? 'tab-active' : ''}`}
+                onClick={() => setSelectedTab("link")}
+              >
+                Paste a link
+              </span>
+            </div>
+            {
+              selectedTab === "upload" ?
+                <UploadButton  onChange={loadImage}/>
+                :
+                <>
+                <input
+                  type="text"
+                  className="input input-bordered w-full max-w-xs"
+                  placeholder="https://www.lequipe.fr/_medias/img-photo-jpg/a-reau-l-equipe/1500000001682641/0:0,1998:1332-828-552-75/170c4"
+                  onBlur={loadImageFromUrl}
+                />
+                {errorLink && <p className="text-error text-xs">{errorLink}</p>}
+                </>
+            }
           </div>
-          {
-            selectedTab === "upload" ?
-              <UploadButton  onChange={loadImage}/>
-              :
-              <>
-              <input
-                type="text"
-                className="input input-bordered w-full max-w-xs"
-                placeholder="https://www.lequipe.fr/_medias/img-photo-jpg/a-reau-l-equipe/1500000001682641/0:0,1998:1332-828-552-75/170c4"
-                onBlur={loadImageFromUrl}
-              />
-              {errorLink && <p className="text-error text-xs">{errorLink}</p>}
-              </>
-          }
           <div>
             <input
               type="range"
@@ -128,7 +129,7 @@ function SettingsForm({
             />
             <label>Number Of Colors : {numberOfColors}</label>
           </div>
-          <img className="hidden" id="imageSrc" alt="No Image" ref={ref} />
+          <img className="hidden" id="imageSrc" alt="Store the result of the upload. Then the lib convert it to geometries" ref={ref} />
           {
             loading ?
               <button className="btn loading">loading</button>
@@ -180,7 +181,7 @@ function SettingsForm({
 
   return (
     <div className="lg:absolute md:static lg:top-8 lg:left-8 lg:max-w-xs md:max-w-full md:w-full">
-      <div className="overflow-auto card bg-base-100 shadow-2xl w-full" style={{maxHeight: "50vh"}}>
+      <div className="overflow-auto card bg-base-100 shadow-2xl w-full" style={{maxHeight: "60vh"}}>
 
         <div className="card-body p-3 flex flex-col gap-3">
           {renderSettings()}
