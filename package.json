@@ -1,6 +1,6 @@
 {
   "name": "from_image_2_geometries",
-  "homepage": "./",
+  "homepage": "https://guillaume-gomez.github.io/fromImage2Geometries",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
