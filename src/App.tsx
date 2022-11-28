@@ -1,53 +1,25 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, RefObject } from 'react';
+import { format as formatFns } from "date-fns";
 import { useWindowSize } from "rooks";
 import ThreeCanvas from "./components/ThreeCanvas";
 import SettingsForm from "./components/SettingsForm";
+import { ThreeCanvasActions } from "./interfaces";
 import * as THREE from 'three';
 import {
   generateGeometriesByNumberOfColors,
   groupsByColor
 } from "colors2geometries";
 
-/*
-function saveAsImage() {
-        var imgData, imgNode;
-
-        try {
-            var strMime = "image/jpeg";
-            imgData = renderer.domElement.toDataURL(strMime);
-
-            saveFile(imgData.replace(strMime, strDownloadMime), "test.jpg");
-
-        } catch (e) {
-            console.log(e);
-            return;
-        }
-
-    }
-
-    var saveFile = function (strData, filename) {
-        var link = document.createElement('a');
-        if (typeof link.download === 'string') {
-            document.body.appendChild(link); //Firefox requires the link to be in the body
-            link.download = filename;
-            link.href = strData;
-            link.click();
-            document.body.removeChild(link); //remove the link when done
-        } else {
-            location.replace(uri);
-        }
-    }
-
-*/
-
 function App() {
+  const canvasActionsRef = useRef<ThreeCanvasActions| null>(null);
   const { innerWidth, innerHeight } = useWindowSize();
   const refContainer = useRef<HTMLDivElement>(null);
   const [widthContainer, setWidthContainer] = useState<number>(500);
   const [heightContainer, setHeightContainer] = useState<number>(500);
+  const [error, setError] = useState<string|null>(null);
 
   const [velocity, setVelocity] = useState<number>(0);
-  const [numberOfColors, setNumberOfColors] = useState<number>(18);
+  const [numberOfColors, setNumberOfColors] = useState<number>(10);
   const [groups, setGroups] = useState<THREE.Group[]>([]);
 
   useEffect(() => {
@@ -58,6 +30,16 @@ function App() {
       setHeightContainer(innerHeight);
     }
   }, [innerWidth, innerHeight, refContainer]);
+
+  function saveImage(refAnchor: RefObject<HTMLAnchorElement>) {
+    if(canvasActionsRef.current && refAnchor.current) {
+      const format = "png";
+      const dataURL = canvasActionsRef.current.takeScreenshot(format);
+      const dateString = formatFns(new Date(), "dd-MM-yyyy-hh-mm");
+      (refAnchor.current as any).download = `${dateString}-image2geometries.${format}`;
+      refAnchor.current.href = dataURL.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+    }
+  }
 
   function updateGroupPosition(groupId: number, z: number) {
     const newGroups = groups.map(group => {
@@ -70,9 +52,16 @@ function App() {
   }
 
   function onLoadImage(imageDomId: string) {
-    const meshes = generateGeometriesByNumberOfColors(imageDomId, numberOfColors);
-    const groups = groupsByColor(meshes, false);
-    setGroups(groups);
+    try {
+      const meshes = generateGeometriesByNumberOfColors(imageDomId, numberOfColors);
+      console.log(meshes)
+      const groups = groupsByColor(meshes, false);
+      setGroups(groups);
+      setError(null);
+    } catch(error) {
+      console.log(error);
+      setError("The image could not be converted with theses parameters. Reload the page and try again");
+    }
   }
 
 
@@ -86,8 +75,16 @@ function App() {
           groups={groups}
           updateGroupPosition={updateGroupPosition}
           onLoadImage={onLoadImage}
+          saveImage={saveImage}
+          errorGeneration={error}
         />
-        <ThreeCanvas groups={groups} width={widthContainer} height={heightContainer} velocity={velocity} />
+        <ThreeCanvas
+          ref={canvasActionsRef}
+          groups={groups}
+          width={widthContainer}
+          height={heightContainer}
+          velocity={velocity}
+        />
     </div>
   );
 }

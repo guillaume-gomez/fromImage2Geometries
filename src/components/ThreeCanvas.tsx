@@ -1,8 +1,9 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import useAnimationFrame from "../customHooks/useAnimationFrame";
 import { useFullscreen } from "rooks";
+import { ThreeCanvasActions } from "../interfaces";
 import { create3dPointLighting, createPlane, createHelpers, createLights } from "./threejsUtils";
 
 interface ThreeCanvasProps {
@@ -18,7 +19,7 @@ const MIN_Z = -1.25;
 const DEPTH = 0.5;
 
 
-function ThreeCanvas( { groups, width, height, velocity = 0.001} : ThreeCanvasProps) {
+const ThreeCanvas = forwardRef<ThreeCanvasActions, ThreeCanvasProps>(( { groups, width, height, velocity = 0.001}, ref) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scene = useRef(new THREE.Scene());
   const groupRef = useRef<THREE.Group|null>(null);
@@ -29,6 +30,18 @@ function ThreeCanvas( { groups, width, height, velocity = 0.001} : ThreeCanvasPr
   const {
     toggleFullscreen,
   } = useFullscreen({ target: canvasRef });
+
+
+  useImperativeHandle(ref, () => ({
+      takeScreenshot(imageFormat: string): string {
+        if(renderer.current) {
+          console.log("I love screenshots");
+          return renderer.current.domElement.toDataURL(`image/${imageFormat}`);
+        }
+        throw new Error("Cannot find renderer");
+      }
+
+  }));
 
 
   useEffect(() => {
@@ -136,6 +149,6 @@ function ThreeCanvas( { groups, width, height, velocity = 0.001} : ThreeCanvasPr
   return (
     <canvas ref={canvasRef} className="webgl" onDoubleClick={e => toggleFullscreen()}></canvas>
   );
-}
+});
 
 export default ThreeCanvas;
