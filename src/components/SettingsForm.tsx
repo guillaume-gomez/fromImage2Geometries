@@ -26,6 +26,7 @@ function toObjectUrl(url: string) {
     });
 }
 
+const exampleUrl = "https://www.lequipe.fr/_medias/img-photo-jpg/a-reau-l-equipe/1500000001682641/0:0,1998:1332-828-552-75/170c4";
 
 function SettingsForm({
   velocity,
