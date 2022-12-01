@@ -35,7 +35,6 @@ const ThreeCanvas = forwardRef<ThreeCanvasActions, ThreeCanvasProps>(( { groups,
   useImperativeHandle(ref, () => ({
       takeScreenshot(imageFormat: string): string {
         if(renderer.current) {
-          console.log("I love screenshots");
           return renderer.current.domElement.toDataURL(`image/${imageFormat}`);
         }
         throw new Error("Cannot find renderer");
