@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/fromImage2Geometries/static/css/main.6552cdb0.css",
+    "main.js": "/fromImage2Geometries/static/js/main.eef64639.js",
+    "static/js/787.83d08a51.chunk.js": "/fromImage2Geometries/static/js/787.83d08a51.chunk.js",
+    "index.html": "/fromImage2Geometries/index.html",
+    "main.6552cdb0.css.map": "/fromImage2Geometries/static/css/main.6552cdb0.css.map",
+    "main.eef64639.js.map": "/fromImage2Geometries/static/js/main.eef64639.js.map",
+    "787.83d08a51.chunk.js.map": "/fromImage2Geometries/static/js/787.83d08a51.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.6552cdb0.css",
+    "static/js/main.eef64639.js"
+  ]
+}
