@@ -16,18 +16,6 @@ interface SettingsFormProps {
   errorGeneration: string |null;
 }
 
-function toObjectUrl(url: string) {
-  return fetch(url)
-    .then((response)=> {
-      return response.blob();
-    })
-    .then(blob=> {
-      return URL.createObjectURL(blob);
-    });
-}
-
-const exampleUrl = "https://www.lequipe.fr/_medias/img-photo-jpg/a-reau-l-equipe/1500000001682641/0:0,1998:1332-828-552-75/170c4";
-
 function SettingsForm({
   velocity,
   setVelocity,
@@ -43,18 +31,6 @@ function SettingsForm({
   const refAnchor = useRef<HTMLAnchorElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [imageData, setImageData] = useState<string|null>(null);
-  const [selectedTab, setSelectedTab] = useState<string>("upload");
-  const [errorLink, setErroLink] = useState<string|null>(null);
-
-  async function loadImageFromUrl(event: React.ChangeEvent<HTMLInputElement>) {
-    try {
-      const data = await toObjectUrl(event.target.value);
-      setImageData(data);
-      setErroLink(null);
-    } catch {
-      setErroLink("Cannot load the image from the link");
-    }
-  }
 
   function loadImage(event: React.ChangeEvent<HTMLInputElement>) {
     if(event && event.target && event.target.files) {
@@ -89,35 +65,8 @@ function SettingsForm({
         intialState={false}
       >
         <div className="flex flex-col bg-neutral-focus gap-4 items-center rounded">
-          <div className="flex flex-col items-center gap-2">
-            <div className="tabs">
-              <span
-                className={`tab tab-bordered ${selectedTab === "upload" ? 'tab-active' : ''}`}
-                onClick={() => setSelectedTab("upload")}
-              >
-                Upload
-              </span>
-              <span
-                className={`tab tab-bordered ${selectedTab === "link" ? 'tab-active' : ''}`}
-                onClick={() => setSelectedTab("link")}
-              >
-                Paste a link
-              </span>
-            </div>
-            {
-              selectedTab === "upload" ?
-                <UploadButton  onChange={loadImage}/>
-                :
-                <>
-                <input
-                  type="text"
-                  className="input input-bordered w-full max-w-xs"
-                  placeholder="https://www.lequipe.fr/_medias/img-photo-jpg/a-reau-l-equipe/1500000001682641/0:0,1998:1332-828-552-75/170c4"
-                  onBlur={loadImageFromUrl}
-                />
-                {errorLink && <p className="text-error text-xs">{errorLink}</p>}
-                </>
-            }
+          <div className="flex flex-col items-center gap-2 w-full">
+            <UploadButton  onChange={loadImage}/>
           </div>
           <div>
             <input
