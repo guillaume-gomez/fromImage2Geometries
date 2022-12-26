@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/fromImage2Geometries/static/css/main.f6d51ed9.css",
-    "main.js": "/fromImage2Geometries/static/js/main.2aabffb4.js",
+    "main.js": "/fromImage2Geometries/static/js/main.628788b6.js",
     "static/js/787.83d08a51.chunk.js": "/fromImage2Geometries/static/js/787.83d08a51.chunk.js",
     "index.html": "/fromImage2Geometries/index.html",
     "main.f6d51ed9.css.map": "/fromImage2Geometries/static/css/main.f6d51ed9.css.map",
-    "main.2aabffb4.js.map": "/fromImage2Geometries/static/js/main.2aabffb4.js.map",
+    "main.628788b6.js.map": "/fromImage2Geometries/static/js/main.628788b6.js.map",
     "787.83d08a51.chunk.js.map": "/fromImage2Geometries/static/js/787.83d08a51.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f6d51ed9.css",
-    "static/js/main.2aabffb4.js"
+    "static/js/main.628788b6.js"
   ]
 }
