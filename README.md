@@ -2,6 +2,8 @@
 
 Transform an image to 3d shapes depending on color. 
 
+[You can try by yourself](https://guillaume-gomez.github.io/fromImage2Geometries).
+
 ## Preview
 
 <table>
