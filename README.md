@@ -15,7 +15,7 @@ Transform an image to 3d shapes depending on color.
   </tr>
   <tr>
     <td>
-      <img src="original-1.png" />
+      <img src="original-1.jpeg" />
     </td>
     <td>
       <img src="preview-1.png" />
