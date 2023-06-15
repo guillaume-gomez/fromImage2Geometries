@@ -60,7 +60,7 @@ function App() {
       setError(null);
     } catch(error) {
       console.log(error);
-      setError("The image could not be converted with theses parameters. Reload the page and try again");
+      setError("The image could not be converted with theses parameters. Try with more or less colors or reload the page and try again");
     }
   }
 
