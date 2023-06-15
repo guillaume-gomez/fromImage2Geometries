@@ -34,6 +34,7 @@ function SettingsForm({
 
   function loadImage(event: React.ChangeEvent<HTMLInputElement>) {
     if(event && event.target && event.target.files) {
+      // TODO resize image if too heavy
       setImageData(URL.createObjectURL(event.target.files[0]));
     }
   }

@@ -15,29 +15,29 @@ Transform an image to 3d shapes depending on color.
   </tr>
   <tr>
     <td>
-      <img src="original-1.png" />
+      <img src="examples/original-1.png" />
     </td>
     <td>
-      <img src="preview-1.png" />
+      <img src="examples/preview-1.png" />
     </td>
   </tr>
   
   <tr>
     <td>
-      <img src="original-2.png" />
+      <img src="examples/original-2.png" />
     </td>
     <td>
-      <img src="preview-2.png" />
+      <img src="examples/preview-2.png" />
     </td>
   </tr>
   
     
   <tr>
     <td>
-      <img src="original-3.png" />
+      <img src="examples/original-3.png" />
     </td>
     <td>
-      <img src="preview-3.png" />
+      <img src="examples/preview-3.png" />
     </td>
   </tr>
 </table>
