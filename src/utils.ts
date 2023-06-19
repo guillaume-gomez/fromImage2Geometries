@@ -1,27 +1,43 @@
 
 
-export function resizeImage(baseUrl64: string) : string {
+export async function resizeImage(baseUrl64: string) : Promise<string> {
   const canvas = document.createElement('canvas');
-  fromDataUrlToCanvas(baseUrl64, canvas);
-  // max width
-  // max height
-  resizeImageCanvas(canvas, canvas, 200, 200);
-  canvas.toDataURL();
+  await fromDataUrlToCanvas(baseUrl64, canvas);
+  const maxWidth = 1920;
+  const maxHeight = 1080;
+
+  if(canvas.width > maxWidth) {
+    const width = maxWidth;
+    const height = (canvas.width/canvas.height) * width;
+    resizeImageCanvas(canvas, canvas, width, height);
+  }
+  else if(canvas.height > maxHeight) {
+    const height = maxHeight;
+    const width = (canvas.width/canvas.height) * height;
+    resizeImageCanvas(canvas, canvas, width, height);
+  }
+
+  return canvas.toDataURL();
 }
 
-
-async function fromDataUrlToCanvas(baseUrl64: string, originCanvas: HTMLCanvasElement ) {
+// mutate the canvas
+async function fromDataUrlToCanvas(baseUrl64: string, originCanvas: HTMLCanvasElement) :Promise<void> {
   const context = originCanvas.getContext('2d');
 
   if(!context) {
     throw new Error("Cannot find context");
   }
 
-  const image = new Image();
-  image.src = await new Promise(resolve => resolve(baseUrl64));
-  image.onload = () => {
-    context.drawImage(image, 0, 0);
-  };
+  return new Promise(resolve => {
+    const image = new Image();
+    image.onload = () => {
+      originCanvas.width = image.width;
+      originCanvas.height = image.height;
+      context.drawImage(image, 0, 0);
+      resolve();
+    };
+    image.src = baseUrl64;
+  });
 }
 
 

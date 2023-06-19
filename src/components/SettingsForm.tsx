@@ -1,5 +1,6 @@
 import React, { useState, useRef, RefObject } from 'react';
 import CustomRange from "./CustomRange";
+import { resizeImage } from "../utils";
 import CollapsibleCard from "./CollapsibleCard";
 import UploadButton from "./UploadButton";
 import * as THREE from 'three';
@@ -32,10 +33,10 @@ function SettingsForm({
   const [loading, setLoading] = useState<boolean>(false);
   const [imageData, setImageData] = useState<string|null>(null);
 
-  function loadImage(event: React.ChangeEvent<HTMLInputElement>) {
+  async function loadImage(event: React.ChangeEvent<HTMLInputElement>) {
     if(event && event.target && event.target.files) {
-      // TODO resize image if too heavy
-      setImageData(URL.createObjectURL(event.target.files[0]));
+      const image = await resizeImage(URL.createObjectURL(event.target.files[0]));
+      setImageData(image);
     }
   }
 
