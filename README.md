@@ -1,6 +1,6 @@
 # From Image To Geometries
 
-Transform an image to 3d shapes depending on color. 
+Transform any image to 3d shapes depending on color. 
 
 [You can try by yourself](https://guillaume-gomez.github.io/fromImage2Geometries).
 
