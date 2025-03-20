@@ -3,6 +3,7 @@ import CustomRange from "./CustomRange";
 import { resizeImage } from "../utils";
 import CollapsibleCard from "./CollapsibleCard";
 import UploadButton from "./UploadButton";
+import UploadFromLinkButton from "./UploadFromLinkButton";
 import * as THREE from 'three';
 
 interface SettingsFormProps {
@@ -66,9 +67,10 @@ function SettingsForm({
         title="Settings"
         intialState={false}
       >
-        <div className="flex flex-col bg-neutral-focus gap-4 items-center rounded">
+        <div className="flex flex-col gap-4 items-center rounded">
           <div className="flex flex-col items-center gap-2 w-full">
             <UploadButton  onChange={loadImage}/>
+            <UploadFromLinkButton onChange={loadImage}/>
           </div>
           <div>
             <input
@@ -109,7 +111,7 @@ function SettingsForm({
             onChange={(value) => setVelocity(value)}
           />
           <div className="flex flex-col gap-5">
-            <button className="btn btn-outline btn-primary" onClick={alignGroup}>
+            <button className="btn btn-outline btn-primary uppercase" onClick={alignGroup}>
               align all groups
             </button>
             {
@@ -139,7 +141,7 @@ function SettingsForm({
           {renderSettings()}
           <span className="text-xs">Double click to switch to fullscreen</span>
           {renderOptions()}
-          <a ref={refAnchor} className="btn btn-secondary" onClick={() => saveImage(refAnchor)}>Take Screenshot 📷</a>
+          <a ref={refAnchor} className="btn btn-secondary uppercase" onClick={() => saveImage(refAnchor)}>Take Screenshot 📷</a>
         </div>
       </div>
     </div>

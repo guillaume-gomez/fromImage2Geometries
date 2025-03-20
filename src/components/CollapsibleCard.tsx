@@ -11,10 +11,10 @@ function CollapsibleCard({ title, intialState, children } : CollapsibleCardProps
   const [collapse, setCollapse] = useState<boolean>(intialState);
   return (
     <div
-      className="collapse collapse-arrow border bg-neutral-focus border-0 rounded py-2"
+      className="collapse collapse-arrow border bg-base-300 border-0 rounded-xl py-2"
     >
       <input type="checkbox" checked={collapse} onChange={() => setCollapse(!collapse)}/>
-      <div className="collapse-title">
+      <div className="collapse-title uppercase">
         {title}
       </div>
       {
