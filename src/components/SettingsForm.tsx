@@ -3,7 +3,6 @@ import CustomRange from "./CustomRange";
 import { resizeImage } from "../utils";
 import CollapsibleCard from "./CollapsibleCard";
 import UploadButton from "./UploadButton";
-import UploadFromLinkButton from "./UploadFromLinkButton";
 import * as THREE from 'three';
 
 interface SettingsFormProps {
@@ -70,7 +69,6 @@ function SettingsForm({
         <div className="flex flex-col gap-4 items-center rounded">
           <div className="flex flex-col items-center gap-2 w-full">
             <UploadButton  onChange={loadImage}/>
-            <UploadFromLinkButton onChange={loadImage}/>
           </div>
           <div>
             <input
